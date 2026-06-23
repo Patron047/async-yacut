@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}YaCut - Главная{% endblock %}
+
+{% block content %}
+<section class="container my-5 px-4">
+  <h1 class="text-center"><span style="color:red">Ya</span>Cut</h1>
+  <p class="text-center my-4">
+    Создайте короткую ссылку автоматически или предложите свой вариант
+  </p>
+
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+          {{ form.original_link(
+            class="form-control form-control-lg py-2 mb-3",
+            placeholder="Длинная ссылка"
+          ) }}
+          {% for error in form.original_link.errors %}
+            <p class="text-danger small">{{ error }}</p>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          {{ form.custom_id(
+            class="form-control form-control-lg py-2 mb-3",
+            placeholder="Ваш вариант короткой ссылки"
+          ) }}
+          {% for error in form.custom_id.errors %}
+            <p class="text-danger small">{{ error }}</p>
+          {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg btn-block">
+          Создать
+        </button>
+      </form>
+
+      {% if short_link %}
+      <div class="alert alert-success mt-4 text-center">
+        <p class="mb-1">Ваша короткая ссылка:</p>
+        <a href="{{ short_link }}" class="h5" target="_blank">
+          {{ short_link }}
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

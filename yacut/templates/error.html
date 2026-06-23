@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}YaCut - Ошибка {{ error_code }}{% endblock %}
+
+{% block content %}
+<section class="container my-5 px-4 text-center">
+  <h1 class="display-1 text-danger">{{ error_code }}</h1>
+  <p class="lead">{{ error_message }}</p>
+  <a href="{{ url_for('main.index') }}" class="btn btn-primary mt-3">На главную</a>
+</section>
+{% endblock %}
