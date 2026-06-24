@@ -1,7 +1,14 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, FileField
-from wtforms.validators import DataRequired, URL, Length, ValidationError
+from wtforms.validators import (
+    DataRequired, URL, Length, ValidationError, Regexp, Optional
+)
 
+from yacut.constants import (
+    CUSTOM_ID_MAX_LENGTH,
+    CUSTOM_ID_PATTERN,
+    RESERVED_SHORT_IDS
+)
 from yacut.models import URLMap
 
 
@@ -12,18 +19,26 @@ class ShortenLinkForm(FlaskForm):
     )
     custom_id = StringField(
         'Ваш вариант короткой ссылки',
-        validators=[Length(max=16, message='Максимум 16 символов')]
+        validators=[
+            Optional(),
+            Length(max=CUSTOM_ID_MAX_LENGTH),
+            Regexp(
+                CUSTOM_ID_PATTERN,
+                message='Недопустимые символы в короткой ссылке'
+            )
+        ]
     )
 
     def validate_custom_id(self, field):
-        if field.data and URLMap.query.filter_by(short=field.data).first():
-            raise ValidationError(
-                'Предложенный вариант короткой ссылки уже существует.'
-            )
-        if field.data == 'files':
-            raise ValidationError(
-                'Предложенный вариант короткой ссылки уже существует.'
-            )
+        if field.data:
+            if field.data in RESERVED_SHORT_IDS:
+                raise ValidationError(
+                    'Предложенный вариант короткой ссылки уже существует.'
+                )
+            if URLMap.query.filter_by(short=field.data).first():
+                raise ValidationError(
+                    'Предложенный вариант короткой ссылки уже существует.'
+                )
 
 
 class UploadFilesForm(FlaskForm):

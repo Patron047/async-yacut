@@ -1,10 +1,11 @@
 import random
 import string
 
+from yacut.constants import SHORT_ID_LENGTH
 from yacut.models import URLMap
 
 
-def get_unique_short_id(length=6):
+def get_unique_short_id(length=SHORT_ID_LENGTH):
     chars = string.ascii_letters + string.digits
     while True:
         short_id = ''.join(random.choices(chars, k=length))

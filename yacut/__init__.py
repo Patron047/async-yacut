@@ -10,6 +10,11 @@ load_dotenv()
 db = SQLAlchemy()
 migrate = Migrate()
 
+# Импорты blueprint после инициализации db для избежания циклических импортов.
+from yacut.views import main
+from yacut.api_views import api
+from yacut.error_handlers import errors
+
 
 def create_app():
     app = Flask(__name__)
@@ -23,10 +28,6 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db)
-
-    from yacut.views import main
-    from yacut.api_views import api
-    from yacut.error_handlers import errors
 
     app.register_blueprint(main)
     app.register_blueprint(api, url_prefix='/api')

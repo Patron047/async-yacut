@@ -5,6 +5,8 @@ import urllib.parse
 import aiohttp
 from dotenv import load_dotenv
 
+from yacut.exceptions import YandexDiskError
+
 load_dotenv()
 
 API_HOST = 'https://cloud-api.yandex.net/'
@@ -36,7 +38,9 @@ async def upload_file_to_disk(session, file_storage):
     async with session.put(upload_href, data=file_data) as response:
         location = response.headers.get('Location')
         if not location:
-            raise Exception(f'Не получен заголовок для файла {filename}')
+            raise YandexDiskError(
+                f'Не получен заголовок для файла {filename}'
+            )
         disk_path = urllib.parse.unquote(location).replace('/disk', '')
     download_params = {'path': disk_path}
     async with session.get(
